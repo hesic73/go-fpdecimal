@@ -7,7 +7,7 @@ import (
 )
 
 func TestFrom(t *testing.T) {
-	d, err := FromString("28900.465")
+	d, err := FromString("323.15932906")
 	if err != nil {
 		log.Fatal(err)
 	}

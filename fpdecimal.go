@@ -1,6 +1,8 @@
 package gofpdecimal
 
-import "math"
+import (
+	"math"
+)
 
 type FpDecimal struct {
 	underlyingValue int64

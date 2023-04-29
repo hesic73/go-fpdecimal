@@ -18,8 +18,11 @@ var (
 	errOverflow               = &errorString{"numeric overflow"}
 )
 
-// ParseFixedPointDecimal parses fixed-point decimal of p fractions into int64.
 func ParseFixedPointDecimal(s string) (int64, uint, error) {
+	if s[0] == '"' && len(s) >= 2 && s[len(s)-1] == '"' {
+		s = s[1 : len(s)-1]
+	}
+
 	if s == "" {
 		return 0, 0, errEmptyString
 	}

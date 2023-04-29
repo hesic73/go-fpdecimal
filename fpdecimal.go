@@ -93,6 +93,9 @@ func FromString(s string) (FpDecimal, error) {
 }
 
 func (d *FpDecimal) UnmarshalJSON(b []byte) (err error) {
+	if b[0] == '"' && len(b) >= 2 && b[len(b)-1] == '"' {
+		b = b[1 : len(b)-1]
+	}
 	d.underlyingValue, d.precision, err = ParseFixedPointDecimal(string(b))
 	return err
 }

@@ -73,7 +73,7 @@ func (d *FpDecimal) Float64() float64 {
 	return float64(d.underlyingValue) / float64(pow10(d.precision))
 }
 
-func (d *FpDecimal) String() string {
+func (d FpDecimal) String() string {
 	return FixedPointDecimalToString(d.underlyingValue, int(d.precision))
 }
 

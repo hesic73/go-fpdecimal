@@ -20,5 +20,5 @@ func floatPow10(f float64, e uint) float64 {
 		f *= 10.0
 		e--
 	}
-	return f + 1e-8
+	return f + 1e-8 // or .99999999 will be rounded
 }

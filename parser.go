@@ -1,22 +1,6 @@
 package gofpdecimal
 
-import (
-	"math"
-)
-
 const sep = '.'
-
-type errorString struct{ v string }
-
-func (e *errorString) Error() string { return e.v }
-
-var (
-	errEmptyString            = &errorString{"empty string"}
-	errMissingDigitsAfterSign = &errorString{"missing digits after sign"}
-	errBadDigit               = &errorString{"bad digit"}
-	errMultipleDots           = &errorString{"multiple dots"}
-	errOverflow               = &errorString{"numeric overflow"}
-)
 
 func ParseFixedPointDecimal(s string) (int64, uint, error) {
 	if s == "" {
@@ -51,18 +35,13 @@ func ParseFixedPointDecimal(s string) (int64, uint, error) {
 			return 0, 0, errBadDigit
 		}
 		n = n*10 + int64(ch)
+		if n < 0 {
+			return 0, 0, errOverflow
+		}
 
 		if d != -1 {
 			d++
 		}
-
-		if n >= math.MaxInt64/10 {
-			if d == -1 {
-				return 0, 0, errOverflow
-			}
-			break
-		}
-
 	}
 
 	// fill rest of 0
@@ -72,6 +51,11 @@ func ParseFixedPointDecimal(s string) (int64, uint, error) {
 
 	if s0[0] == '-' {
 		n = -n
+	}
+
+	for n%10 == 0 && d > 0 {
+		n /= 10
+		d--
 	}
 
 	return n, uint(d), nil

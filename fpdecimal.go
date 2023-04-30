@@ -34,41 +34,34 @@ func NewFpDecimal(precision uint) FpDecimal {
 	}
 }
 
-func FromInteger(i int64) FpDecimal {
+func FromInt64(i int64) FpDecimal {
 	return FpDecimal{
-		underlyingValue: int64(i),
+		underlyingValue: i,
 		precision:       0,
 	}
 }
 
-func pow10(e uint) int64 {
-	if e > 18 {
-		panic("The precision should be at most 18")
+func (d *FpDecimal) tight() {
+	for d.underlyingValue%10 == 0 && d.precision > 0 {
+		d.underlyingValue /= 10
+		d.precision--
 	}
-	var tmp int64 = 1
-	for e > 0 {
-		tmp *= 10
-		e--
-	}
-	return tmp
 }
 
 func FromFloat64(f float64, precision uint) FpDecimal {
-	if f*float64(pow10(precision)) > math.MaxInt64 {
+	v := floatPow10(f, precision)
+	if v > math.MaxInt64 {
 		panic("f*10^precision should be no larger than math.MaxInt64")
-	} else if f*float64(pow10(precision)) < math.MinInt64 {
+	} else if v < math.MinInt64 {
 		panic("f*10^precision should be no less than math.MinInt64")
 	}
 
 	tmp := FpDecimal{
-		underlyingValue: int64(f * float64(pow10(precision))),
+		underlyingValue: int64(v),
 		precision:       precision,
 	}
 
-	for tmp.underlyingValue%10 == 0 && tmp.precision > 0 {
-		tmp.underlyingValue /= 10
-		tmp.precision--
-	}
+	tmp.tight()
 	return tmp
 }
 
@@ -101,3 +94,18 @@ func (d *FpDecimal) UnmarshalJSON(b []byte) (err error) {
 }
 
 func (d *FpDecimal) MarshalJSON() ([]byte, error) { return []byte(d.String()), nil }
+
+func (d *FpDecimal) To(precision uint) bool {
+	if precision > 18 {
+		return false
+	}
+	if precision >= d.precision {
+		return true
+	}
+	for i := precision; i < d.precision; i++ {
+		d.underlyingValue /= 10
+	}
+	d.precision = precision
+	d.tight()
+	return true
+}

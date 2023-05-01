@@ -44,3 +44,11 @@ func TestTo(t *testing.T) {
 	}
 
 }
+
+func TestPercent(t *testing.T) {
+	a, err := FromString("0.0000123009")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(a.Percent())
+}

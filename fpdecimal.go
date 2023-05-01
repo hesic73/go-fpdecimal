@@ -1,6 +1,7 @@
 package gofpdecimal
 
 import (
+	"fmt"
 	"math"
 )
 
@@ -75,6 +76,16 @@ func (d *FpDecimal) Float64() float64 {
 
 func (d FpDecimal) String() string {
 	return FixedPointDecimalToString(d.underlyingValue, int(d.precision))
+}
+
+func (d FpDecimal) Percent() string {
+	if d.underlyingValue*100/100 != d.underlyingValue {
+		fmt_str := fmt.Sprintf("%%.%df", d.precision)
+		return fmt.Sprintf(fmt_str, d.Float64()*100) + "%"
+	}
+	d.underlyingValue *= 100
+	d.tight()
+	return FixedPointDecimalToString(d.underlyingValue, int(d.precision)) + "%"
 }
 
 func FromString(s string) (FpDecimal, error) {

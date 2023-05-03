@@ -10,4 +10,5 @@ var (
 	errBadDigit               = &errorString{"bad digit"}
 	errMultipleDots           = &errorString{"multiple dots"}
 	errOverflow               = &errorString{"numeric overflow"}
+	errDivisionByZero         = &errorString{"division by zero"}
 )

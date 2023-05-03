@@ -1,5 +1,9 @@
 package gofpdecimal
 
+import (
+	"math"
+)
+
 // Preserve the larger precision. It will throw an error when these efforts fail
 func Add(a, b FpDecimal) (FpDecimal, error) {
 	if a.precision < b.precision {
@@ -68,4 +72,41 @@ func Sub(a, b FpDecimal) (FpDecimal, error) {
 		underlyingValue: tmp,
 		precision:       p,
 	}, nil
+}
+
+func (d FpDecimal) MulInteger(i int64) (FpDecimal, error) {
+	for i%10 == 0 && d.precision > 0 {
+		i /= 10
+		d.precision--
+	}
+	if d.underlyingValue*i/i != d.underlyingValue {
+		return GetZero(), errOverflow
+	}
+	d.underlyingValue *= i
+	return d, nil
+}
+
+// no guarantee on precision of the result
+func (d FpDecimal) DivInteger(i int64) (FpDecimal, error) {
+	if i == 0 {
+		return GetZero(), errDivisionByZero
+	}
+	if d.underlyingValue == math.MinInt64 && i == -1 {
+		return GetZero(), errOverflow
+	}
+
+	for i%10 == 0 && d.precision < 19 {
+		i /= 10
+		d.precision++
+	}
+
+	for d.precision < 19 && d.underlyingValue*10/10 == d.underlyingValue {
+		d.underlyingValue *= 10
+		d.precision++
+	}
+
+	d.underlyingValue /= i
+
+	d.tight()
+	return d, nil
 }

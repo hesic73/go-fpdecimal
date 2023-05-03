@@ -71,3 +71,27 @@ func TestSub(t *testing.T) {
 		}
 	}
 }
+
+func TestMulInteger(t *testing.T) {
+	a, err := FromString("12345678901234")
+	if err != nil {
+		log.Fatal(err)
+	}
+	b, err := a.MulInteger(88)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(a, b)
+}
+
+func TestDivInteger(t *testing.T) {
+	a, err := FromString("12345678901234.123")
+	if err != nil {
+		log.Fatal(err)
+	}
+	b, err := a.DivInteger(88)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(a, b)
+}

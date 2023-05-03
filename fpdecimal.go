@@ -120,3 +120,7 @@ func (d *FpDecimal) To(precision uint) bool {
 	d.tight()
 	return true
 }
+
+func (d *FpDecimal) IsZero() bool {
+	return d.underlyingValue == 0
+}

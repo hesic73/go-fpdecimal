@@ -3,6 +3,7 @@ package gofpdecimal
 import (
 	"fmt"
 	"math"
+	"strings"
 )
 
 type FpDecimal struct {
@@ -123,4 +124,17 @@ func (d *FpDecimal) To(precision uint) bool {
 
 func (d *FpDecimal) IsZero() bool {
 	return d.underlyingValue == 0
+}
+
+func (d *FpDecimal) ToPrecision(n uint) string {
+	if n >= d.precision {
+		s := FixedPointDecimalToString(d.underlyingValue, int(d.precision))
+		s = s + strings.Repeat("0", int(n-d.precision))
+		return s
+	} else {
+		mask := pow10(d.precision - n)
+		d.underlyingValue -= d.underlyingValue % mask
+		d.tight()
+		return FixedPointDecimalToString(d.underlyingValue, int(d.precision))
+	}
 }

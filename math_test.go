@@ -1,4 +1,4 @@
-package gofpdecimal
+package gofpdecimal_test
 
 import (
 	"fmt"
@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"testing"
 
+	gofpdecimal "github.com/hesic73/go-fpdecimal"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -35,10 +36,10 @@ func TestAdd(t *testing.T) {
 
 	for i := 0; i < n; i++ {
 		tmp := <-ch
-		a := FromFloat64(tmp[0], 10)
-		b := FromFloat64(tmp[1], 10)
-		c := FromFloat64(tmp[2], 10)
-		d, err := Add(a, b)
+		a := gofpdecimal.FromFloat64(tmp[0], 10)
+		b := gofpdecimal.FromFloat64(tmp[1], 10)
+		c := gofpdecimal.FromFloat64(tmp[2], 10)
+		d, err := gofpdecimal.Add(a, b)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -57,10 +58,10 @@ func TestSub(t *testing.T) {
 
 	for i := 0; i < n; i++ {
 		tmp := <-ch
-		a := FromFloat64(tmp[0], 10)
-		b := FromFloat64(tmp[1], 10)
-		c := FromFloat64(tmp[2], 10)
-		d, err := Sub(a, b)
+		a := gofpdecimal.FromFloat64(tmp[0], 10)
+		b := gofpdecimal.FromFloat64(tmp[1], 10)
+		c := gofpdecimal.FromFloat64(tmp[2], 10)
+		d, err := gofpdecimal.Sub(a, b)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -73,7 +74,7 @@ func TestSub(t *testing.T) {
 }
 
 func TestMulInteger(t *testing.T) {
-	a, err := FromString("12345678901234")
+	a, err := gofpdecimal.FromString("12345678901234")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -85,7 +86,7 @@ func TestMulInteger(t *testing.T) {
 }
 
 func TestDivInteger(t *testing.T) {
-	a, err := FromString("12345678901234.123")
+	a, err := gofpdecimal.FromString("12345678901234.123")
 	if err != nil {
 		log.Fatal(err)
 	}

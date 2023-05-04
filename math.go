@@ -152,3 +152,63 @@ func (d FpDecimal) Div(v FpDecimal) (FpDecimal, error) {
 	d.tight()
 	return d, nil
 }
+
+//	func getDigit(n int64) int {
+//		var d int = 0
+//		for n != 0 {
+//			n /= 10
+//			d++
+//		}
+//		return d
+//	}
+func intComparator(a, b int64) int {
+	if a > b {
+		return 1
+	} else if a == b {
+		return 0
+	} else {
+		return -1
+	}
+}
+func floatComparator(a, b float32) int {
+	if a > b {
+		return 1
+	} else if a == b {
+		return 0
+	} else {
+		return -1
+	}
+}
+
+func Comparator(a, b FpDecimal) int {
+	a.tight()
+	b.tight()
+
+	if a.underlyingValue == 0 {
+		return b.Sign()
+	}
+	if b.underlyingValue == 0 {
+		return a.Sign()
+	}
+	if a.underlyingValue > 0 && b.underlyingValue < 0 {
+		return 1
+	} else if a.underlyingValue < 0 && b.underlyingValue > 0 {
+		return -1
+	} else {
+		ta := pow10(b.precision)
+		tb := pow10(a.precision)
+		a_scaled := a.underlyingValue * ta
+		b_scaled := b.underlyingValue * tb
+
+		a_overflow := a_scaled/a.underlyingValue != ta
+		b_overflow := b_scaled/b.underlyingValue != tb
+
+		if !a_overflow && !b_overflow {
+			return intComparator(a_scaled, b_scaled)
+		} else {
+			return floatComparator(float32(a.underlyingValue)/float32(tb), float32(b.underlyingValue)/float32(ta))
+		}
+
+	}
+
+}

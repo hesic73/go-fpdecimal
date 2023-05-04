@@ -120,3 +120,28 @@ func TestNeg(t *testing.T) {
 	}
 	fmt.Println(a.Neg())
 }
+
+func floatComparator(a, b float64) int {
+	if a > b {
+		return 1
+	} else if a == b {
+		return 0
+	} else {
+		return -1
+	}
+}
+
+func TestComparator(t *testing.T) {
+	n := 10000
+	for i := 0; i < n; i++ {
+		a := float64(rand.Int63()%1000000000) / 100000.0
+		b := float64(rand.Int63()%1000000000) / 100000.0
+
+		x := gofpdecimal.FromFloat64(a, 10)
+		y := gofpdecimal.FromFloat64(b, 10)
+		if !assert.Equal(t, floatComparator(a, b), gofpdecimal.Comparator(x, y)) {
+			fmt.Println(i, x, y)
+			break
+		}
+	}
+}

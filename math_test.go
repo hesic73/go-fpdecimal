@@ -112,3 +112,11 @@ func TestDiv(t *testing.T) {
 	}
 	fmt.Println(c)
 }
+
+func TestNeg(t *testing.T) {
+	a, err := gofpdecimal.FromString("123.456")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(a.Neg())
+}

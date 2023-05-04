@@ -142,3 +142,11 @@ func (d *FpDecimal) ToPrecision(n uint) string {
 		return FixedPointDecimalToString(d.underlyingValue, int(d.precision))
 	}
 }
+
+func (d FpDecimal) Neg() FpDecimal {
+	if d.underlyingValue == math.MinInt64 {
+		panic(errOverflow)
+	}
+	d.underlyingValue = -d.underlyingValue
+	return d
+}

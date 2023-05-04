@@ -98,11 +98,11 @@ func TestDivInteger(t *testing.T) {
 }
 
 func TestDiv(t *testing.T) {
-	a, err := gofpdecimal.FromString("12.45679839579")
+	a, err := gofpdecimal.FromString("111100")
 	if err != nil {
 		log.Fatal(err)
 	}
-	b, err := gofpdecimal.FromString("9.1232281145")
+	b, err := gofpdecimal.FromString("1")
 	if err != nil {
 		log.Fatal(err)
 	}

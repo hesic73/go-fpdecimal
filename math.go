@@ -132,19 +132,22 @@ func (d FpDecimal) Div(v FpDecimal) (FpDecimal, error) {
 		d.underlyingValue *= 10
 		d.precision++
 	}
-
+	if d.precision < v.precision {
+		// 这里就属于设计缺陷，小数位和精度应该是两个不同的东西
+		// 但改回int的话，之前好像默认precision非负，就先这样吧
+		glg.Warn("FpDecimal.Div d.precision<v.precision，转换为float64计算")
+		tmp := FromFloat64(d.Float64()/v.Float64(), v.precision-d.precision)
+		return tmp, nil
+	}
+	//也可能是比较大的整除，就这样吧先
 	if d.underlyingValue/v.underlyingValue < 1000000 {
 		glg.Warn("FpDecimal.Div精度不够，转换为float64计算")
-		tmp := FromFloat64(d.Float64()/v.Float64(), 18)
+		tmp := FromFloat64(d.Float64()/v.Float64(), d.precision-v.precision)
 		return tmp, nil
 	}
 
 	d.underlyingValue /= v.underlyingValue
-	if d.precision < v.precision {
-		// 这里就属于设计缺陷，小数位和精度应该是两个不同的东西
-		// 但改回int的话，之前好像默认precision非负，就先这样吧
-		glg.Fatal("FpDecimal.Div d.precision<v.precision")
-	}
+
 	d.precision -= v.precision
 	d.tight()
 	return d, nil

@@ -150,3 +150,13 @@ func (d FpDecimal) Neg() FpDecimal {
 	d.underlyingValue = -d.underlyingValue
 	return d
 }
+
+func (d FpDecimal) Sign() int {
+	if d.underlyingValue > 0 {
+		return 1
+	} else if d.underlyingValue == 0 {
+		return 0
+	} else {
+		return -1
+	}
+}

@@ -8,7 +8,7 @@ import (
 
 type FpDecimal struct {
 	underlyingValue int64
-	precision       uint
+	precision       uint // 名字好像起的比较失败，但又不是exp，应该说我被fpdecimal给带歪了。有空大改
 }
 
 func GetZero() FpDecimal {
@@ -46,6 +46,10 @@ func FromInt64(i int64) FpDecimal {
 func (d *FpDecimal) tight() {
 	for d.underlyingValue%10 == 0 && d.precision > 0 {
 		d.underlyingValue /= 10
+		if d.underlyingValue == 0 {
+			d.precision = 0
+			break
+		}
 		d.precision--
 	}
 }

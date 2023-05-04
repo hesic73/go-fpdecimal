@@ -96,3 +96,19 @@ func TestDivInteger(t *testing.T) {
 	}
 	fmt.Println(a, b)
 }
+
+func TestDiv(t *testing.T) {
+	a, err := gofpdecimal.FromString("12.45679839579")
+	if err != nil {
+		log.Fatal(err)
+	}
+	b, err := gofpdecimal.FromString("9.1232281145")
+	if err != nil {
+		log.Fatal(err)
+	}
+	c, err := a.Div(b)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(c)
+}

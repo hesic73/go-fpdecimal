@@ -2,6 +2,8 @@ package gofpdecimal
 
 import (
 	"math"
+
+	"github.com/kpango/glg"
 )
 
 // Preserve the larger precision. It will throw an error when these efforts fail
@@ -107,6 +109,43 @@ func (d FpDecimal) DivInteger(i int64) (FpDecimal, error) {
 
 	d.underlyingValue /= i
 
+	d.tight()
+	return d, nil
+}
+
+// 最开始设计的时候就有问题，我把精度和magnitude混为一谈
+func (d FpDecimal) Div(v FpDecimal) (FpDecimal, error) {
+
+	if v.IsZero() {
+		return GetZero(), errDivisionByZero
+	}
+	if d.underlyingValue == math.MinInt64 && v.underlyingValue == -1 {
+		return GetZero(), errOverflow
+	}
+
+	// d.precision might be >=19 ?
+	for v.underlyingValue%10 == 0 {
+		v.underlyingValue /= 10
+		d.precision++
+	}
+	for d.underlyingValue*10/10 == d.underlyingValue {
+		d.underlyingValue *= 10
+		d.precision++
+	}
+
+	if d.underlyingValue/v.underlyingValue < 1000000 {
+		glg.Warn("FpDecimal.Div精度不够，转换为float64计算")
+		tmp := FromFloat64(d.Float64()/v.Float64(), 18)
+		return tmp, nil
+	}
+
+	d.underlyingValue /= v.underlyingValue
+	if d.precision < v.precision {
+		// 这里就属于设计缺陷，小数位和精度应该是两个不同的东西
+		// 但改回int的话，之前好像默认precision非负，就先这样吧
+		glg.Fatal("FpDecimal.Div d.precision<v.precision")
+	}
+	d.precision -= v.precision
 	d.tight()
 	return d, nil
 }

@@ -145,3 +145,11 @@ func TestComparator(t *testing.T) {
 		}
 	}
 }
+
+func TestLog10Int(t *testing.T) {
+	a, err := gofpdecimal.FromString("3.4561434")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(gofpdecimal.Log10Int(a))
+}

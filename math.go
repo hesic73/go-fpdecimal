@@ -212,3 +212,7 @@ func Comparator(a, b FpDecimal) int {
 	}
 
 }
+
+func Log10Int(d FpDecimal) int {
+	return log10Int(d.underlyingValue) - int(d.precision)
+}

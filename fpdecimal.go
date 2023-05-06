@@ -133,6 +133,9 @@ func (d *FpDecimal) IsZero() bool {
 func (d *FpDecimal) ToPrecision(n uint) string {
 	if n >= d.precision {
 		s := FixedPointDecimalToString(d.underlyingValue, int(d.precision))
+		if d.precision == 0 && n != 0 {
+			return s + "." + strings.Repeat("0", int(n))
+		}
 		s = s + strings.Repeat("0", int(n-d.precision))
 		return s
 	} else {
